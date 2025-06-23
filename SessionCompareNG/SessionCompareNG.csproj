@@ -35,6 +35,10 @@
       <HintPath>..\..\..\..\AVEVA\Engineering15.4\Aveva.Core.Database.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Aveva.Core.Utilities">
+      <HintPath>..\..\..\..\AVEVA\Engineering15.4\Aveva.Core.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PMLNet">
       <HintPath>..\..\..\..\AVEVA\Engineering15.4\PMLNet.dll</HintPath>
       <Private>False</Private>

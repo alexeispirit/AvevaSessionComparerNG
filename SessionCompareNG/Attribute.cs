@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Aveva.Core.Utilities.CommandLine;
 
 namespace SessionCompareNG
 {
@@ -23,6 +24,12 @@ namespace SessionCompareNG
             result[4] = NewValue;
 
             return result;
+        }
+
+        public Command ToAvevaCommand()
+        {
+            Command command = Command.CreateCommand($"$P {Name}: {OldValue} -> {NewValue}");
+            return command;
         }
     }
 }

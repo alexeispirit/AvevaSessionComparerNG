@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Aveva.Core.Database;
 using Aveva.Core.PMLNet;
+using Aveva.Core.Utilities.CommandLine;
 
 namespace SessionCompareNG
 {
+    [PMLNetCallable]
     public class SessionCompareNG
     {
+        public string Tag { get; set; }
         Dictionary<string, string> attDescriptions = new Dictionary<string, string>();
         Dictionary<string, string> baseAttributes = new Dictionary<string, string>();
         Dictionary<string, string> targetAttributes = new Dictionary<string, string>();
@@ -41,17 +44,21 @@ namespace SessionCompareNG
         }
 
         [PMLNetCallable]
-        public void Print(string tag, double baseSessNo, double targetSessNo)
+        public void Print()
         {
+            Command command = Command.CreateCommand($"$P {Tag}");
+            command.RunInPdms();
             foreach (Attribute attCompared in comparedAttributes)
             {
-                Console.WriteLine(attCompared.ToString());
+                command = attCompared.ToAvevaCommand();
+                command.RunInPdms();
             }
         }
 
         [PMLNetCallable]
         public void Run(string tag, double baseSessNo, double targetSessNo)
         {
+            Tag = tag;
             Initialize(tag, baseSessNo, targetSessNo);
         }
 
