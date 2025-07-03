@@ -1,7 +1,4 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
 using Aveva.Core.PMLNet;
 using Aveva.Core.Utilities.CommandLine;
@@ -13,7 +10,7 @@ namespace SessionCompareNG
     {
         public TagInfo Tag1;
         public TagInfo Tag2;
-        public List<ComparedAttribute> ComparedAttributes = new List<ComparedAttribute>();
+        public ComparedTag CompareResult;
 
         [PMLNetCallable]
         public Compare() { }
@@ -23,7 +20,7 @@ namespace SessionCompareNG
         {
             Tag1 = tag1;
             Tag2 = tag2;
-            RunCompare();
+            CompareResult = new ComparedTag(tag1, tag2);
         }
 
         [PMLNetCallable]
@@ -31,7 +28,7 @@ namespace SessionCompareNG
         {
             Tag1 = other.Tag1;
             Tag2 = other.Tag2;
-            ComparedAttributes = other.ComparedAttributes;
+            CompareResult = other.CompareResult;
         }
 
         [PMLNetCallable]
@@ -39,7 +36,7 @@ namespace SessionCompareNG
         {
             Hashtable result = new Hashtable();
             int i = 0;
-            foreach (ComparedAttribute comparedAttribute in ComparedAttributes)
+            foreach (ComparedAttribute comparedAttribute in CompareResult.Attributes)
             {
                 result[++i] = comparedAttribute.ToHashtable();
             }
@@ -51,7 +48,7 @@ namespace SessionCompareNG
         public Hashtable Attribute(string name)
         {
             Hashtable result = new Hashtable();
-            ComparedAttribute att = ComparedAttributes.Where(x => x.Name.ToLower() == name.ToLower()).FirstOrDefault();
+            ComparedAttribute att = CompareResult.Attributes.Where(x => x.Name.ToLower() == name.ToLower()).FirstOrDefault();
             if (att != null)
             {
                 result[1] = att.Name;
@@ -70,7 +67,7 @@ namespace SessionCompareNG
         {
             Hashtable result = new Hashtable();
             int i = 0;
-            foreach (ComparedAttribute comparedAttribute in ComparedAttributes.Where(x => x.OldValue != x.NewValue))
+            foreach (ComparedAttribute comparedAttribute in CompareResult.Attributes.Where(x => x.State == AttributeState.Modified))
             {
                 result[++i] = comparedAttribute.ToHashtable();
             }
@@ -83,32 +80,11 @@ namespace SessionCompareNG
         {
             Command command = Command.CreateCommand($"$P {Tag1.Name}");
             command.RunInPdms();
-            foreach (ComparedAttribute attCompared in ComparedAttributes.Where(x => x.OldValue != x.NewValue))
+            foreach (ComparedAttribute attCompared in CompareResult.Attributes.Where(x => x.State == AttributeState.Modified))
             {
                 command = attCompared.ToAvevaCommand();
                 command.RunInPdms();
             }
         }
-
-        private void RunCompare()
-        {
-            if (Tag1.IsNull || Tag2.IsNull)
-            {
-                throw new Exception("Two TagInfo objects required.");
-            }
-
-            foreach (string key in Tag1.AttributesDict.Keys)
-            {
-                ComparedAttribute comparedAttribute = new ComparedAttribute
-                {
-                    Name = key,
-                    OldValue = Tag1.AttributesDict[key],
-                    NewValue = Tag2.AttributesDict[key]
-                };
-                ComparedAttributes.Add(comparedAttribute);
-            }
-        }
-
-
     }
 }

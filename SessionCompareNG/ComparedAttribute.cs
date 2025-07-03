@@ -6,8 +6,19 @@ namespace SessionCompareNG
     public class ComparedAttribute
     {
         public string Name { get; set; }
+        public string Description { get; set; }
+        public AttributeState State { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
+
+        public ComparedAttribute(string name, string description, string oldValue, string newValue)
+        {
+            Name = name;
+            Description = description;
+            OldValue = oldValue;
+            NewValue = newValue;
+            State = OldValue == NewValue ? AttributeState.Idle : AttributeState.Modified;
+        }
 
         public override string ToString()
         {

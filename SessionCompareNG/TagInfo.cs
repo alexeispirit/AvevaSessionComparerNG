@@ -12,6 +12,7 @@ namespace SessionCompareNG
     public class TagInfo
     {
         public Db Db;
+        public DbSession Session;
         public DbElementType UDET;
         public DbElement DbElement;
         public string RefNo;
@@ -82,9 +83,10 @@ namespace SessionCompareNG
             Name = tagName;
             SessionNumber = sessionNo;
             Db = Database(dbName);
+            Session = DbSession(Db, SessionNumber);
             UDET = Udet(udetName);
             PossibleAttributes = GetPossibleAttributes();
-            ProcessElement(Db, Name, SessionNumber);
+            ProcessElement(Db, Name, Session);
         }
 
         private Db Database(string dbName) 
@@ -98,6 +100,16 @@ namespace SessionCompareNG
             return db;
         }
 
+        private DbSession DbSession(Db db, int sessionNo)
+        {
+            DbSession session = db.Session(sessionNo);
+            if (!session.IsValid)
+            {
+                throw new Exception($"Invalid Session in database {db.Name}.");
+            }
+            return session;
+        }
+
         private DbElementType Udet(string udetName)
         {
             DbElementType[] udets = DbElementType.GetAllUdets();
@@ -109,14 +121,8 @@ namespace SessionCompareNG
             return result;
         }
 
-        private void ProcessElement(Db db, string tagName, int sessionNo)
+        private void ProcessElement(Db db, string tagName, DbSession session)
         {
-            DbSession session = db.Session(sessionNo);
-            if (!session.IsValid)
-            {
-                throw new Exception($"Invalid Session in database {db.Name}.");
-            }
-
             db.SwitchToOldSession(session);
             DbElement = DbElement.GetElement(tagName);
 
