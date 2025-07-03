@@ -35,6 +35,7 @@ namespace SessionCompareNG
         public void Assign(TagInfo that)
         {
             Db = that.Db;
+            Session = that.Session;
             UDET = that.UDET;
             DbElement = that.DbElement;
             RefNo = that.RefNo;

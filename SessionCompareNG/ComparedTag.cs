@@ -16,7 +16,7 @@ namespace SessionCompareNG
 
         public ComparedTag(TagInfo prevSessionTag, TagInfo currSessionTag, TagState state = TagState.Uncompared) 
         {
-            if (PreviousSessionTag.IsNull || CurrentSessionTag.IsNull) 
+            if (prevSessionTag.IsNull || currSessionTag.IsNull) 
             {
                 throw new Exception("Two TagInfo objects required.");
             }
@@ -44,8 +44,8 @@ namespace SessionCompareNG
                 ComparedAttribute comparedAttribute = new ComparedAttribute(
                     attrName, 
                     attrDesc,
-                    PreviousSessionTag.AttributesDict[attrName],
-                    CurrentSessionTag.AttributesDict[attrName]);
+                    PreviousSessionTag.AttributesDict[attrName.ToLower()],
+                    CurrentSessionTag.AttributesDict[attrName.ToLower()]);
                 Attributes.Add(comparedAttribute);
             }
 
