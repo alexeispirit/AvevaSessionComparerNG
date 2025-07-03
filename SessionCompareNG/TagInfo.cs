@@ -27,7 +27,7 @@ namespace SessionCompareNG
         [PMLNetCallable]
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo) 
         {
-            Init(dbName, udetName, tagName, sessionNo);
+            Init(dbName, udetName, tagName, (int)sessionNo);
         }
 
         [PMLNetCallable]
@@ -77,10 +77,10 @@ namespace SessionCompareNG
             }
         }
 
-        private void Init(string dbName, string udetName, string tagName, double sessionNo)
+        private void Init(string dbName, string udetName, string tagName, int sessionNo)
         {
             Name = tagName;
-            SessionNumber = (int)sessionNo;
+            SessionNumber = sessionNo;
             Db = Database(dbName);
             UDET = Udet(udetName);
             PossibleAttributes = GetPossibleAttributes();
