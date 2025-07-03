@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Aveva.Core.Database;
 
 namespace SessionCompareNG
@@ -37,6 +38,7 @@ namespace SessionCompareNG
             State = state;
 
             Attributes = new List<ComparedAttribute>();
+            
             foreach (DbAttribute dbAttrKey in CurrentSessionTag.PossibleAttributes)
             {
                 string attrName = dbAttrKey.Name;
@@ -54,6 +56,60 @@ namespace SessionCompareNG
             
             DbSession currSession = CurrentSessionTag.Session;
             CurrentSession = new Session(currSession.User, currSession.SessionNumber, currSession.Date);
+        }
+
+        public ComparedTag(TagInfo someSessionTag, TagState state = TagState.Uncompared)
+        {
+            if (someSessionTag.IsNull)
+            {
+                throw new Exception("Tag element required.");
+            }
+
+            PreviousSessionTag = someSessionTag;
+            CurrentSessionTag = someSessionTag;
+            Name = CurrentSessionTag.Name;
+            State = state;
+
+            Attributes = new List<ComparedAttribute>();
+
+            foreach (DbAttribute dbAttrKey in CurrentSessionTag.PossibleAttributes)
+            {
+                string attrName = dbAttrKey.Name;
+                string attrDesc = dbAttrKey.Description;
+                ComparedAttribute comparedAttribute = new ComparedAttribute(
+                    attrName,
+                    attrDesc,
+                    CurrentSessionTag.AttributesDict[attrName.ToLower()],
+                    CurrentSessionTag.AttributesDict[attrName.ToLower()]);
+                Attributes.Add(comparedAttribute);
+            }
+
+            DbSession session = PreviousSessionTag.Session;
+            PreviousSession = new Session(session.User, session.SessionNumber, session.Date);
+            CurrentSession = PreviousSession;
+        }
+
+        public void DebugPrint()
+        {
+            Console.WriteLine($"{Name} [{State.ToString()}]");
+            switch(State)
+            {
+                case TagState.New:
+                case TagState.Deleted:
+                case TagState.Idle:
+                    CurrentSession.DebugPrint();
+                    break;
+                case TagState.Modified:
+                case TagState.Uncompared:
+                default:
+                    PreviousSession.DebugPrint();
+                    CurrentSession.DebugPrint();
+                    break;
+            }
+            foreach (ComparedAttribute att in Attributes.Where(x => x.State == AttributeState.Modified))
+            {
+                att.DebugPrint();
+            }
         }
     }
 }

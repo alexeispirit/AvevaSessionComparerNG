@@ -14,5 +14,10 @@ namespace SessionCompareNG
             Number = number;
             DateTime = datetime;
         }
+        public void DebugPrint()
+        {
+            string datetime = DateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+            Console.WriteLine($"Session {Number} by {User} at {datetime}");
+        }
     }
 }

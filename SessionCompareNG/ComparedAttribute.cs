@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Aveva.Core.Utilities.CommandLine;
 
 namespace SessionCompareNG
@@ -22,7 +23,12 @@ namespace SessionCompareNG
 
         public override string ToString()
         {
-            return $"{Name}: {OldValue} -> {NewValue}";
+            return $"{Name} ({Description}): {OldValue} -> {NewValue}";
+        }
+
+        public void DebugPrint()
+        {
+            Console.WriteLine(this.ToString());
         }
 
         public Hashtable ToHashtable()
