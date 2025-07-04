@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Xml;
 using Aveva.Core.Utilities.CommandLine;
 
 namespace SessionCompareNG
@@ -39,6 +40,17 @@ namespace SessionCompareNG
             result[3] = NewValue;
 
             return result;
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteStartElement("Attribute");
+            writer.WriteAttributeString("Name", Name);
+            writer.WriteAttributeString("Description", Description);
+            writer.WriteAttributeString("State", State.ToString());
+            writer.WriteAttributeString("OldValue", OldValue);
+            writer.WriteAttributeString("NewValue", NewValue);
+            writer.WriteEndElement();
         }
 
         public Command ToAvevaCommand()

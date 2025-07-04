@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Aveva.Core.Database;
 
 namespace SessionCompareNG
@@ -87,6 +88,19 @@ namespace SessionCompareNG
             DbSession session = PreviousSessionTag.Session;
             PreviousSession = new Session(session.User, session.SessionNumber, session.Date);
             CurrentSession = PreviousSession;
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteStartElement("Tag");
+            writer.WriteAttributeString("Name", Name);
+            writer.WriteAttributeString("State", State.ToString());
+            PreviousSession.WriteXml(writer, SessionType.Previous);
+            CurrentSession.WriteXml(writer, SessionType.Current);
+            writer.WriteStartElement("Attributes");
+            Attributes.ForEach(attr => attr.WriteXml(writer));
+            writer.WriteEndElement();
+            writer.WriteEndElement();
         }
 
         public void DebugPrint()

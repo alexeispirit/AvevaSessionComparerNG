@@ -59,6 +59,7 @@
     <Compile Include="ComparedTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session.cs" />
+    <Compile Include="SessionType.cs" />
     <Compile Include="TagInfo.cs" />
     <Compile Include="TagState.cs" />
   </ItemGroup>
