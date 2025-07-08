@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SessionCompareNG</RootNamespace>
     <AssemblyName>SessionCompareNG</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,16 +33,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aveva.Core.Database">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.4\Aveva.Core.Database.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Core.Database.dll</HintPath>
+    </Reference>
+    <Reference Include="Aveva.Core.Database.View">
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Core.Database.View.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Aveva.Core.Utilities">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.4\Aveva.Core.Utilities.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Core.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Aveva.Engineering.Grids.Implementation">
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Engineering.Grids.Implementation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PMLNet">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.4\PMLNet.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7\PMLNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute.cs" />
     <Compile Include="AttributeState.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="ComparedAttribute.cs" />

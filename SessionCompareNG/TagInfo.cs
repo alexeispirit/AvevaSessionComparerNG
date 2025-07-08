@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Aveva.Core.Database;
 using Aveva.Core.PMLNet;
+using Aveva.Core.Database.View;
 using Aveva.Core.Utilities.CommandLine;
+using Aveva.Engineering.Grids.Implementation;
 
 namespace SessionCompareNG
 {
@@ -20,7 +22,7 @@ namespace SessionCompareNG
         public int SessionNumber;
         public bool IsNull;
         public List<DbAttribute> PossibleAttributes = new List<DbAttribute>();
-        public Dictionary<string, string> AttributesDict = new Dictionary<string, string>();
+        public Dictionary<string, Attribute> AttributesDict = new Dictionary<string, Attribute>();
 
         [PMLNetCallable]
         public TagInfo() { }
@@ -29,6 +31,13 @@ namespace SessionCompareNG
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo) 
         {
             Init(dbName, udetName, tagName, (int)sessionNo);
+            ProcessAllAttributes(Db, Name, Session);
+        }
+
+        public TagInfo(string dbName, string udetName, string tagName, double sessionNo, ListDefinition lstDef)
+        {
+            Init(dbName, udetName, tagName, (int)sessionNo);
+            ProcessLstDefAttrbutes(lstDef);
         }
 
         [PMLNetCallable]
@@ -64,9 +73,9 @@ namespace SessionCompareNG
         [PMLNetCallable]
         public string Attribute(string name)
         {
-            string attValue = "";
+            Attribute attValue = new Attribute { Name = String.Empty, Description = String.Empty, Value = String.Empty};
             AttributesDict.TryGetValue(name.ToLower(), out attValue);
-            return attValue;
+            return attValue.Value;
         }
 
         [PMLNetCallable]
@@ -87,7 +96,6 @@ namespace SessionCompareNG
             Session = DbSession(Db, SessionNumber);
             UDET = Udet(udetName);
             PossibleAttributes = GetPossibleAttributes();
-            ProcessElement(Db, Name, Session);
         }
 
         private Db Database(string dbName) 
@@ -122,7 +130,7 @@ namespace SessionCompareNG
             return result;
         }
 
-        private void ProcessElement(Db db, string tagName, DbSession session)
+        private void ProcessAllAttributes(Db db, string tagName, DbSession session)
         {
             db.SwitchToOldSession(session);
             DbElement = DbElement.GetElement(tagName);
@@ -138,11 +146,35 @@ namespace SessionCompareNG
                 IsNull = true;
             }
 
-
             if (db.IsSwitched())
             {
                 db.SwitchBackSession(true);
             }
+        }
+
+        private Dictionary<string, Attribute> ProcessLstDefAttrbutes(ListDefinition lstDef)
+        {
+            Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();
+            attributes.Add("ref", new Attribute { Name = "refno", Description = "Reference Number", Value = RefNo });
+
+            Hashtable columnDefTable = lstDef.ColDefinition;
+            List<double> columnDefKeys = columnDefTable.Keys.Cast<double>().OrderBy(x => x).ToList();
+            DbView dbView = lstDef.GetDbView();
+
+            foreach (double key in columnDefKeys)
+            {
+                ColumnDefinition colDef = (ColumnDefinition)columnDefTable[key];
+                if (!colDef.IsHidden)
+                {
+                    IColumn column = dbView.Columns.First(x => x.ColumnName == colDef.Key);
+
+                    DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
+                    object value = column.GetValue(dbViewElement);
+                    attributes.Add(colDef.Key, new Attribute { Name = colDef.Key, Description = colDef.Title, Value = value.ToString() });
+                }
+            }
+
+            return attributes;
         }
 
         private List<DbAttribute> GetPossibleAttributes()
@@ -150,17 +182,18 @@ namespace SessionCompareNG
             return UDET.DisplayAttributes().ToList();
         }
 
-        private Dictionary<string, string> ProcessAttributes()
+        private Dictionary<string, Attribute> ProcessAttributes()
         {
-            Dictionary<string, string> attributes = new Dictionary<string, string>();
+            Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();
 
-            attributes.Add("ref", RefNo);
+            attributes.Add("ref", new Attribute { Name = "refno", Description = "Reference Number", Value = RefNo });
 
             foreach (DbAttribute dbAttribute in PossibleAttributes)
             {
                 string attrName = dbAttribute.Name.ToLower();
                 string attrValue = DbElement.GetAsString(dbAttribute);
-                attributes.Add(attrName, attrValue);
+                string attrDesc = dbAttribute.Description;
+                attributes.Add(attrName, new Attribute { Name = attrName, Description = attrDesc, Value = attrValue });
             }
             
             return attributes;

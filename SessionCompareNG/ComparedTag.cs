@@ -33,30 +33,7 @@ namespace SessionCompareNG
                 throw new Exception("Tags have different UDET.");
             }
 
-            PreviousSessionTag = prevSessionTag;
-            CurrentSessionTag = currSessionTag;
-            Name = CurrentSessionTag.Name;
-            State = state;
-
-            Attributes = new List<ComparedAttribute>();
-            
-            foreach (DbAttribute dbAttrKey in CurrentSessionTag.PossibleAttributes)
-            {
-                string attrName = dbAttrKey.Name;
-                string attrDesc = dbAttrKey.Description;
-                ComparedAttribute comparedAttribute = new ComparedAttribute(
-                    attrName, 
-                    attrDesc,
-                    PreviousSessionTag.AttributesDict[attrName.ToLower()],
-                    CurrentSessionTag.AttributesDict[attrName.ToLower()]);
-                Attributes.Add(comparedAttribute);
-            }
-
-            DbSession prevSession = PreviousSessionTag.Session;
-            PreviousSession = new Session(prevSession.User, prevSession.SessionNumber, prevSession.Date);
-            
-            DbSession currSession = CurrentSessionTag.Session;
-            CurrentSession = new Session(currSession.User, currSession.SessionNumber, currSession.Date);
+            Init(prevSessionTag, currSessionTag, state);
         }
 
         public ComparedTag(TagInfo someSessionTag, TagState state = TagState.Uncompared)
@@ -66,8 +43,13 @@ namespace SessionCompareNG
                 throw new Exception("Tag element required.");
             }
 
-            PreviousSessionTag = someSessionTag;
-            CurrentSessionTag = someSessionTag;
+            Init(someSessionTag, someSessionTag, state);
+        }
+
+        public void Init(TagInfo prevSessionTag, TagInfo currSessionTag, TagState state)
+        {
+            PreviousSessionTag = prevSessionTag;
+            CurrentSessionTag = currSessionTag;
             Name = CurrentSessionTag.Name;
             State = state;
 
@@ -80,14 +62,16 @@ namespace SessionCompareNG
                 ComparedAttribute comparedAttribute = new ComparedAttribute(
                     attrName,
                     attrDesc,
-                    CurrentSessionTag.AttributesDict[attrName.ToLower()],
-                    CurrentSessionTag.AttributesDict[attrName.ToLower()]);
+                    PreviousSessionTag.AttributesDict[attrName.ToLower()].Value,
+                    CurrentSessionTag.AttributesDict[attrName.ToLower()].Value);
                 Attributes.Add(comparedAttribute);
             }
 
-            DbSession session = PreviousSessionTag.Session;
-            PreviousSession = new Session(session.User, session.SessionNumber, session.Date);
-            CurrentSession = PreviousSession;
+            DbSession prevSession = PreviousSessionTag.Session;
+            PreviousSession = new Session(prevSession.User, prevSession.SessionNumber, prevSession.Date);
+
+            DbSession currSession = CurrentSessionTag.Session;
+            CurrentSession = new Session(currSession.User, currSession.SessionNumber, currSession.Date);
         }
 
         public void WriteXml(XmlWriter writer)
