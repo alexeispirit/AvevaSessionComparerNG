@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="Aveva.Core.Database">
       <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Core.Database.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Aveva.Core.Database.View">
       <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Core.Database.View.dll</HintPath>
@@ -41,6 +42,7 @@
     </Reference>
     <Reference Include="Aveva.Core.Utilities">
       <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Core.Utilities.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Aveva.Engineering.Grids.Implementation">
       <HintPath>..\..\..\..\AVEVA\Engineering15.7\Aveva.Engineering.Grids.Implementation.dll</HintPath>
@@ -48,6 +50,7 @@
     </Reference>
     <Reference Include="PMLNet">
       <HintPath>..\..\..\..\AVEVA\Engineering15.7\PMLNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Attribute.cs" />
     <Compile Include="AttributeState.cs" />
+    <Compile Include="AttributeCollect.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="ComparedAttribute.cs" />
     <Compile Include="ComparedTag.cs" />

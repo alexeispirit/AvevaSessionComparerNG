@@ -21,6 +21,7 @@ namespace SessionCompareNG
         public string Name;
         public int SessionNumber;
         public bool IsNull;
+        ListDefinition LstDef;
         public List<DbAttribute> PossibleAttributes = new List<DbAttribute>();
         public Dictionary<string, Attribute> AttributesDict = new Dictionary<string, Attribute>();
 
@@ -31,13 +32,22 @@ namespace SessionCompareNG
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo) 
         {
             Init(dbName, udetName, tagName, (int)sessionNo);
-            ProcessAllAttributes(Db, Name, Session);
+            ProcessAttributeValues(AttributeCollect.ALL);
+        }
+
+        [PMLNetCallable]
+        public TagInfo(string dbName, string udetName, string tagName, double sessionNo, bool useLstDef)
+        {
+            Init(dbName, udetName, tagName, (int)sessionNo);
+            LstDef = new ListDefinition("=16391/805");
+            ProcessAttributeValues(AttributeCollect.LSTDEF);
         }
 
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo, ListDefinition lstDef)
         {
             Init(dbName, udetName, tagName, (int)sessionNo);
-            ProcessLstDefAttrbutes(lstDef);
+            LstDef = lstDef;
+            ProcessAttributeValues(AttributeCollect.LSTDEF);
         }
 
         [PMLNetCallable]
@@ -47,6 +57,7 @@ namespace SessionCompareNG
             Session = that.Session;
             UDET = that.UDET;
             DbElement = that.DbElement;
+            LstDef = that.LstDef;
             RefNo = that.RefNo;
             Name = that.Name;
             SessionNumber = that.SessionNumber;
@@ -130,36 +141,45 @@ namespace SessionCompareNG
             return result;
         }
 
-        private void ProcessAllAttributes(Db db, string tagName, DbSession session)
+        private void ProcessAttributeValues(AttributeCollect ac)
         {
-            db.SwitchToOldSession(session);
-            DbElement = DbElement.GetElement(tagName);
+            Db.SwitchToOldSession(Session);
+            DbElement = DbElement.GetElement(Name);
 
             if (!DbElement.IsNull)
             {
                 IsNull = false;
                 RefNo = GetReference();
-                AttributesDict = ProcessAttributes();
+                if (ac == AttributeCollect.ALL)
+                {
+                    AttributesDict = ProcessAttributes();
+                }
+                else
+                {
+                    AttributesDict = ProcessLstDefAttrbutes();
+                }
             }
             else
             {
                 IsNull = true;
             }
 
-            if (db.IsSwitched())
+            if (Db.IsSwitched())
             {
-                db.SwitchBackSession(true);
+                Db.SwitchBackSession(true);
             }
         }
 
-        private Dictionary<string, Attribute> ProcessLstDefAttrbutes(ListDefinition lstDef)
+        
+
+        private Dictionary<string, Attribute> ProcessLstDefAttrbutes()
         {
             Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();
-            attributes.Add("ref", new Attribute { Name = "refno", Description = "Reference Number", Value = RefNo });
+            attributes.Add("ref", new Attribute { Name = "RefNo", Description = "Reference Number", Value = RefNo });
 
-            Hashtable columnDefTable = lstDef.ColDefinition;
+            Hashtable columnDefTable = LstDef.ColDefinition;
             List<double> columnDefKeys = columnDefTable.Keys.Cast<double>().OrderBy(x => x).ToList();
-            DbView dbView = lstDef.GetDbView();
+            DbView dbView = LstDef.GetDbView();
 
             foreach (double key in columnDefKeys)
             {
@@ -170,7 +190,7 @@ namespace SessionCompareNG
 
                     DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
                     object value = column.GetValue(dbViewElement);
-                    attributes.Add(colDef.Key, new Attribute { Name = colDef.Key, Description = colDef.Title, Value = value.ToString() });
+                    attributes.Add(colDef.Key.ToLower(), new Attribute { Name = colDef.Key, Description = colDef.Title, Value = value.ToString() });
                 }
             }
 

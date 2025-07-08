@@ -55,15 +55,15 @@ namespace SessionCompareNG
 
             Attributes = new List<ComparedAttribute>();
 
-            foreach (DbAttribute dbAttrKey in CurrentSessionTag.PossibleAttributes)
+            foreach (string attrKey in CurrentSessionTag.AttributesDict.Keys)
             {
-                string attrName = dbAttrKey.Name;
-                string attrDesc = dbAttrKey.Description;
+                string attrName = CurrentSessionTag.AttributesDict[attrKey].Name;
+                string attrDesc = CurrentSessionTag.AttributesDict[attrKey].Description;
                 ComparedAttribute comparedAttribute = new ComparedAttribute(
                     attrName,
                     attrDesc,
-                    PreviousSessionTag.AttributesDict[attrName.ToLower()].Value,
-                    CurrentSessionTag.AttributesDict[attrName.ToLower()].Value);
+                    PreviousSessionTag.AttributesDict[attrKey.ToLower()].Value,
+                    CurrentSessionTag.AttributesDict[attrKey.ToLower()].Value);
                 Attributes.Add(comparedAttribute);
             }
 
