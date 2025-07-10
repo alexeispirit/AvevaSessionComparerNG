@@ -79,6 +79,8 @@ namespace SessionCompareNG
             writer.WriteStartElement("Tag");
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("State", State.ToString());
+            writer.WriteAttributeString("PreviousRef", PreviousSessionTag.RefNo);
+            writer.WriteAttributeString("CurrentRef", CurrentSessionTag.RefNo);
             PreviousSession.WriteXml(writer, SessionType.Previous);
             CurrentSession.WriteXml(writer, SessionType.Current);
             writer.WriteStartElement("Attributes");

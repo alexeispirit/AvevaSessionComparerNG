@@ -35,6 +35,7 @@ namespace SessionCompareNG
             ProcessAttributeValues(AttributeCollect.ALL);
         }
 
+        // Debug constructor
         [PMLNetCallable]
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo, bool useLstDef)
         {
@@ -175,7 +176,7 @@ namespace SessionCompareNG
         private Dictionary<string, Attribute> ProcessLstDefAttrbutes()
         {
             Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();
-            attributes.Add("ref", new Attribute { Name = "RefNo", Description = "Reference Number", Value = RefNo });
+            //attributes.Add("ref", new Attribute { Name = "RefNo", Description = "Reference Number", Value = RefNo });
 
             Hashtable columnDefTable = LstDef.ColDefinition;
             List<double> columnDefKeys = columnDefTable.Keys.Cast<double>().OrderBy(x => x).ToList();
