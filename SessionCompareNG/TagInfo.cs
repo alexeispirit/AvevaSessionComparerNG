@@ -37,11 +37,12 @@ namespace SessionCompareNG
 
         // Debug constructor
         [PMLNetCallable]
-        public TagInfo(string dbName, string udetName, string tagName, double sessionNo, bool useLstDef)
+        public TagInfo(string dbName, string udetName, string tagName, double sessionNo, string lstRef)
         {
             Init(dbName, udetName, tagName, (int)sessionNo);
-            LstDef = new ListDefinition("=16391/805");
+            LstDef = new ListDefinition(lstRef);
             ProcessAttributeValues(AttributeCollect.LSTDEF);
+            Console.WriteLine("Done");
         }
 
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo, ListDefinition lstDef)
@@ -95,7 +96,7 @@ namespace SessionCompareNG
         {
             foreach (string key in AttributesDict.Keys)
             {
-                Command command = Command.CreateCommand($"$P {key}: {AttributesDict[key]}");
+                Command command = Command.CreateCommand($"$P {AttributesDict[key].Name}: {AttributesDict[key].Value}");
                 command.RunInPdms();
             }
         }
@@ -191,7 +192,7 @@ namespace SessionCompareNG
 
                     DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
                     object value = column.GetValue(dbViewElement);
-                    attributes.Add(colDef.Key.ToLower(), new Attribute { Name = colDef.Key, Description = colDef.Title, Value = value.ToString() });
+                    attributes.Add(colDef.Key.ToLower(), new Attribute { Name = colDef.Key, Description = colDef.Title, Value = value != null ? value.ToString() : string.Empty });
                 }
             }
 
