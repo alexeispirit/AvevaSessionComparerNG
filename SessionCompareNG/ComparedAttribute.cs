@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Xml;
+using System.Collections;
+using System.Text.RegularExpressions;
 using Aveva.Core.Utilities.CommandLine;
 
 namespace SessionCompareNG
@@ -15,6 +16,8 @@ namespace SessionCompareNG
 
         public ComparedAttribute(string name, string description, string oldValue, string newValue)
         {
+            
+
             Name = name;
             Description = description;
             OldValue = oldValue;

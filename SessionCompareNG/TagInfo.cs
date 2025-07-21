@@ -42,7 +42,6 @@ namespace SessionCompareNG
             Init(dbName, udetName, tagName, (int)sessionNo);
             LstDef = new ListDefinition(lstRef);
             ProcessAttributeValues(AttributeCollect.LSTDEF);
-            Console.WriteLine("Done");
         }
 
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo, ListDefinition lstDef)
@@ -86,7 +85,7 @@ namespace SessionCompareNG
         [PMLNetCallable]
         public string Attribute(string name)
         {
-            Attribute attValue = new Attribute { Name = String.Empty, Description = String.Empty, Value = String.Empty};
+            Attribute attValue = new Attribute(String.Empty, String.Empty, String.Empty);
             AttributesDict.TryGetValue(name.ToLower(), out attValue);
             return attValue.Value;
         }
@@ -96,7 +95,7 @@ namespace SessionCompareNG
         {
             foreach (string key in AttributesDict.Keys)
             {
-                Command command = Command.CreateCommand($"$P {AttributesDict[key].Name}: {AttributesDict[key].Value}");
+                Command command = Command.CreateCommand($"$P <{AttributesDict[key].Name}>: {AttributesDict[key].Value}");
                 command.RunInPdms();
             }
         }
@@ -172,8 +171,6 @@ namespace SessionCompareNG
             }
         }
 
-        
-
         private Dictionary<string, Attribute> ProcessLstDefAttrbutes()
         {
             Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();
@@ -191,8 +188,9 @@ namespace SessionCompareNG
                     IColumn column = dbView.Columns.First(x => x.ColumnName == colDef.Key);
 
                     DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
-                    object value = column.GetValue(dbViewElement);
-                    attributes.Add(colDef.Key.ToLower(), new Attribute { Name = colDef.Key, Description = colDef.Title, Value = value != null ? value.ToString() : string.Empty });
+                    object obj = column.GetValue(dbViewElement);
+                    string value = obj != null ? obj.ToString() : string.Empty;
+                    attributes.Add(colDef.Key.ToLower(), new Attribute(colDef.Key, colDef.Title, value));
                 }
             }
 
@@ -208,14 +206,14 @@ namespace SessionCompareNG
         {
             Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();
 
-            attributes.Add("ref", new Attribute { Name = "refno", Description = "Reference Number", Value = RefNo });
+            attributes.Add("ref", new Attribute("refno", "Reference Number", RefNo));
 
             foreach (DbAttribute dbAttribute in PossibleAttributes)
             {
                 string attrName = dbAttribute.Name.ToLower();
                 string attrValue = DbElement.GetAsString(dbAttribute);
                 string attrDesc = dbAttribute.Description;
-                attributes.Add(attrName, new Attribute { Name = attrName, Description = attrDesc, Value = attrValue });
+                attributes.Add(attrName, new Attribute(attrName, attrDesc, attrValue));
             }
             
             return attributes;
