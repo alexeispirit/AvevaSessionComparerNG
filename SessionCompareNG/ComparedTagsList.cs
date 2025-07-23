@@ -80,8 +80,8 @@ namespace SessionCompareNG
         {
             writer.WriteStartElement("Tags");
             New.ForEach(tag => tag.WriteXml(writer));
-            Idle.ForEach(tag => tag.WriteXml(writer));
             Modified.ForEach(tag => tag.WriteXml(writer));
+            Idle.ForEach(tag => tag.WriteXml(writer));
             Deleted.ForEach(tag => tag.WriteXml(writer));
             writer.WriteEndElement();
         }
