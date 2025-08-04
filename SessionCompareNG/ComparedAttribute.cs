@@ -36,8 +36,9 @@ namespace SessionCompareNG
         {
             Hashtable result = new Hashtable();
             result[1] = Name;
-            result[2] = OldValue;
-            result[3] = NewValue;
+            result[2] = Description;
+            result[3] = OldValue;
+            result[4] = NewValue;
 
             return result;
         }

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Aveva.Core.Database;
+using Aveva.Core.PMLNet;
 
 namespace SessionCompareNG
 {
+    [PMLNetCallable]
     public class ComparedTag
     {
         public string Name { get; set; }
@@ -16,23 +19,9 @@ namespace SessionCompareNG
         public Session PreviousSession { get; set; }
         public Session CurrentSession { get; set; }
 
-        public ComparedTag(TagInfo prevSessionTag, TagInfo currSessionTag, TagState state = TagState.Uncompared) 
+        public ComparedTag(TagInfo prevSessionTag, TagInfo currSessionTag, TagState state) 
         {
-            if (prevSessionTag.IsNull || currSessionTag.IsNull) 
-            {
-                throw new Exception("Two TagInfo objects required.");
-            }
-
-            if (prevSessionTag.Name != currSessionTag.Name)
-            {
-                throw new Exception("Tags have different names.");
-            }
-
-            if (prevSessionTag.UDET.Name != currSessionTag.UDET.Name)
-            {
-                throw new Exception("Tags have different UDET.");
-            }
-
+            Check(prevSessionTag, currSessionTag);
             Init(prevSessionTag, currSessionTag, state);
         }
 
@@ -44,6 +33,41 @@ namespace SessionCompareNG
             }
 
             Init(someSessionTag, someSessionTag, state);
+        }
+
+        [PMLNetCallable]
+        public ComparedTag(TagInfo prevSessionTag, TagInfo currSessionTag)
+        {
+            Check(prevSessionTag, currSessionTag);
+            Init(prevSessionTag, currSessionTag, TagState.Uncompared);
+        }
+
+        [PMLNetCallable]
+        public ComparedTag() { }
+
+        [PMLNetCallable]
+        public void Assign(ComparedTag other)
+        {
+            Name = other.Name;
+            State = other.State;
+            PreviousSessionTag = other.PreviousSessionTag;
+            CurrentSessionTag = other.CurrentSessionTag;
+            Attributes = other.Attributes;
+            PreviousSession = other.PreviousSession;
+            CurrentSession = other.CurrentSession;
+        }
+
+        [PMLNetCallable]
+        public Hashtable ModifiedAttributes()
+        {
+            Hashtable results = new Hashtable();
+            int i = 1;
+            foreach (ComparedAttribute ca in Attributes.Where(a => a.State == AttributeState.Modified))
+            {
+                Hashtable att = ca.ToHashtable();
+                results[i++] = att;
+            }
+            return results;
         }
 
         public void Init(TagInfo prevSessionTag, TagInfo currSessionTag, TagState state)
@@ -72,6 +96,24 @@ namespace SessionCompareNG
 
             DbSession currSession = CurrentSessionTag.Session;
             CurrentSession = new Session(currSession.User, currSession.SessionNumber, currSession.Date);
+        }
+
+        public void Check(TagInfo prevSessionTag, TagInfo currSessionTag)
+        {
+            if (prevSessionTag.IsNull || currSessionTag.IsNull)
+            {
+                throw new Exception("Two TagInfo objects required.");
+            }
+
+            if (prevSessionTag.Name != currSessionTag.Name)
+            {
+                throw new Exception("Tags have different names.");
+            }
+
+            if (prevSessionTag.UDET.Name != currSessionTag.UDET.Name)
+            {
+                throw new Exception("Tags have different UDET.");
+            }
         }
 
         public void WriteXml(XmlWriter writer)
