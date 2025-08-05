@@ -58,11 +58,12 @@ namespace SessionCompareNG
         }
 
         [PMLNetCallable]
-        public Hashtable ModifiedAttributes()
+        public Hashtable ModifiedAttributes(bool onlyModified)
         {
             Hashtable results = new Hashtable();
             int i = 1;
-            foreach (ComparedAttribute ca in Attributes.Where(a => a.State == AttributeState.Modified))
+            List<ComparedAttribute> attributes = onlyModified ? Attributes.Where(a => a.State == AttributeState.Modified).ToList() : Attributes;
+            foreach (ComparedAttribute ca in attributes)
             {
                 Hashtable att = ca.ToHashtable();
                 results[i++] = att;

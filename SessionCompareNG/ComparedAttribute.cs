@@ -39,6 +39,7 @@ namespace SessionCompareNG
             result[2] = Description;
             result[3] = OldValue;
             result[4] = NewValue;
+            result[5] = State.ToString();
 
             return result;
         }
