@@ -36,6 +36,17 @@ namespace SessionCompareNG
         }
 
         [PMLNetCallable]
+        public ComparedTag(TagInfo someSessionTag)
+        {
+            if (someSessionTag.IsNull)
+            {
+                throw new Exception("Tag element required.");
+            }
+
+            Init(someSessionTag, someSessionTag, TagState.Uncompared);
+        }
+
+        [PMLNetCallable]
         public ComparedTag(TagInfo prevSessionTag, TagInfo currSessionTag)
         {
             Check(prevSessionTag, currSessionTag);

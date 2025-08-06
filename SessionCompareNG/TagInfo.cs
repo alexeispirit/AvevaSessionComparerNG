@@ -35,7 +35,6 @@ namespace SessionCompareNG
             ProcessAttributeValues(AttributeCollect.ALL);
         }
 
-        // Debug constructor
         [PMLNetCallable]
         public TagInfo(string dbName, string udetName, string tagName, double sessionNo, string lstRef)
         {
