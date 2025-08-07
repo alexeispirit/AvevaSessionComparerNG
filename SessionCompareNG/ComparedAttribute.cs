@@ -35,7 +35,7 @@ namespace SessionCompareNG
         public Hashtable ToHashtable()
         {
             Hashtable result = new Hashtable();
-            result[1] = Name;
+            result[1] = Name.ToUpper();
             result[2] = Description;
             result[3] = OldValue;
             result[4] = NewValue;
