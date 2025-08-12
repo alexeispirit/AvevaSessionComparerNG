@@ -33,23 +33,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aveva.Core.Database">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.7.1\Aveva.Core.Database.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7.4\Aveva.Core.Database.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Aveva.Core.Database.View">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.7.1\Aveva.Core.Database.View.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7.4\Aveva.Core.Database.View.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Aveva.Core.Utilities">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.7.1\Aveva.Core.Utilities.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7.4\Aveva.Core.Utilities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Aveva.Engineering.Grids.Implementation">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.7.1\Aveva.Engineering.Grids.Implementation.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7.4\Aveva.Engineering.Grids.Implementation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PMLNet">
-      <HintPath>..\..\..\..\AVEVA\Engineering15.7.1\PMLNet.dll</HintPath>
+      <HintPath>..\..\..\..\AVEVA\Engineering15.7.4\PMLNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
