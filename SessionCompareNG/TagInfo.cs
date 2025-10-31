@@ -181,7 +181,7 @@ namespace SessionCompareNG
             foreach (double key in columnDefKeys)
             {
                 ColumnDefinition colDef = (ColumnDefinition)columnDefTable[key];
-                if (!colDef.IsHidden)
+                if (!colDef.IsHidden && colDef.ColumnDataType != "System.Drawing.Image")
                 {
                     IColumn column = dbView.Columns.First(x => x.ColumnName == colDef.Key);
 
