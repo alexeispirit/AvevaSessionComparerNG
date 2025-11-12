@@ -34,6 +34,11 @@ namespace SessionCompareNG
                         double[] valuesDbl = dbElement.GetDoubleArray(attribute);
                         value = String.Join(";", valuesDbl.Select(i => i.ToString()).ToArray());
                         break;
+                    case DbAttributeType.BOOL:
+                        bool[] valuesBool = dbElement.GetBoolArray(attribute);
+                        value = String.Join(";", valuesBool.Select(i => i.ToString()).ToArray());
+                        break;
+                    case DbAttributeType.WORD:
                     case DbAttributeType.STRING:
                     case DbAttributeType.STRINGARRAY:
                         string[] valuesStr = dbElement.GetStringArray(attribute);

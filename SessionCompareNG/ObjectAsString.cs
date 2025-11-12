@@ -21,6 +21,9 @@ namespace SessionCompareNG
                 case double[] doubleArray:
                     value = String.Join(";", doubleArray.Select(i => i.ToString()).ToArray());
                     break;
+                case bool[] boolArray:
+                    value = String.Join(";", boolArray.Select(i => i.ToString()).ToArray());
+                    break;
                 case DbElement[] dbElementArray:
                     value = String.Join(";", dbElementArray.Select(i => i.Name()).ToArray());
                     break;
