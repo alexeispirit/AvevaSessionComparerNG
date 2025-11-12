@@ -133,10 +133,12 @@ namespace SessionCompareNG
         private DbElementType Udet(string udetName)
         {
             DbElementType[] udets = DbElementType.GetAllUdets();
-            DbElementType result = udets.Where(u => u.Name == udetName).FirstOrDefault();
+            DbElementType[] types = DbElementType.GetAllElementTypes();
+            DbElementType[] allTypes = udets.Concat(types).ToArray();
+            DbElementType result = allTypes.Where(u => u.Name == udetName).FirstOrDefault();
             if (result == null)
             {
-                throw new Exception($"No UDET {udetName} found");
+                throw new Exception($"No UDET or TYPE {udetName} found");
             }
             return result;
         }
