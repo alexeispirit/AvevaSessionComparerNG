@@ -185,12 +185,19 @@ namespace SessionCompareNG
                 ColumnDefinition colDef = (ColumnDefinition)columnDefTable[key];
                 if (!colDef.IsHidden && colDef.ColumnDataType != "System.Drawing.Image")
                 {
-                    IColumn column = dbView.Columns.First(x => x.ColumnName == colDef.Key);
+                    try
+                    {
+                        IColumn column = dbView.Columns.First(x => x.ColumnName == colDef.Key);
 
-                    DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
-                    object obj = column.GetValue(dbViewElement);
-                    string value = obj != null ? obj.ToString() : string.Empty;
-                    attributes.Add(colDef.Key.ToLower(), new Attribute(colDef.Key, colDef.Title, value));
+                        DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
+                        object obj = column.GetValue(dbViewElement);
+                        string value = obj != null ? obj.ToString() : string.Empty;
+                        attributes.Add(colDef.Key.ToLower(), new Attribute(colDef.Key, colDef.Title, value));
+                    } 
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine($"Field {colDef.Key} not found in {dbView.NAME}");
+                    }
                 }
             }
 
