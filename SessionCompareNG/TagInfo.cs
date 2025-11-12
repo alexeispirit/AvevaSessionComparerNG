@@ -151,7 +151,7 @@ namespace SessionCompareNG
             if (!DbElement.IsNull)
             {
                 IsNull = false;
-                RefNo = GetReference();
+                RefNo = DbElement.GetRef();
                 if (ac == AttributeCollect.ALL)
                 {
                     AttributesDict = ProcessAttributes();
@@ -191,7 +191,7 @@ namespace SessionCompareNG
 
                         DbViewElement dbViewElement = new DbViewElement(DbElement, dbView);
                         object obj = column.GetValue(dbViewElement);
-                        string value = obj != null ? obj.ToString() : string.Empty;
+                        string value = ObjectAsString.ToString(obj);
                         attributes.Add(colDef.Key.ToLower(), new Attribute(colDef.Key, colDef.Title, value));
                     } 
                     catch(Exception ex)
@@ -218,25 +218,12 @@ namespace SessionCompareNG
             foreach (DbAttribute dbAttribute in PossibleAttributes)
             {
                 string attrName = dbAttribute.Name.ToLower();
-                string attrValue = DbElement.GetAsString(dbAttribute);
+                string attrValue = DbElement.GetAttributeValueAsString(dbAttribute);
                 string attrDesc = dbAttribute.Description;
                 attributes.Add(attrName, new Attribute(attrName, attrDesc, attrValue));
             }
             
             return attributes;
-        }
-
-        private string GetReference()
-        {
-            if (!IsNull)
-            {
-                return $"={String.Join("/", DbElement.Ref)}";
-            }
-            else
-            {
-                return "";
-            }
-            
         }
     }
 }
