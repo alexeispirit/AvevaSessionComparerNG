@@ -32,7 +32,9 @@ namespace SessionCompareNG
                     break;
             }
 
-            return value.Length > 1000 ? value.Substring(0, 1000) : value;
+            value = value.Length > 1000 ? value.Substring(0, 1000) : value;
+            value = value == "Null Element" ? "" : value;
+            return value;
         }
     }
 }
