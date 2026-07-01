@@ -108,6 +108,14 @@ namespace SessionCompareNG
 
             DbSession currSession = CurrentSessionTag.Session;
             CurrentSession = new Session(currSession.User, currSession.SessionNumber, currSession.Date);
+
+            if (AttributesEqual())
+                State = TagState.Idle;
+        }
+
+        private bool AttributesEqual()
+        {
+            return Attributes.All(a => a.NewValue == a.OldValue);
         }
 
         public void Check(TagInfo prevSessionTag, TagInfo currSessionTag)

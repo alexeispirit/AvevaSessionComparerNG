@@ -73,7 +73,10 @@ namespace SessionCompareNG
             New = CompareTags(newTags, TagState.New);
             Deleted = CompareTags(deletedTags, TagState.Deleted);
             Idle = CompareTags(idleTags, TagState.Idle);
-            Modified = CompareTags(modifiedTags, TagState.Modified);
+
+            List<ComparedTag> tempTags = CompareTags(modifiedTags, TagState.Modified);
+            Idle.AddRange(tempTags.Where(t => t.State == TagState.Idle).ToList());
+            Modified = tempTags.Where(t => t.State == TagState.Modified).ToList();
         }
 
         public void WriteXml(XmlWriter writer)
